@@ -1,6 +1,7 @@
 class GraphEditor {
-  constructor(canvas, graph) {
-    this.canvas = canvas;
+  constructor(viewport, graph) {
+    this.viewport = viewport;
+    this.canvas = viewport.canvas;
     this.graph = graph;
 
     this.ctx = this.canvas.getContext("2d");
@@ -14,7 +15,7 @@ class GraphEditor {
   }
 
   #addEventListeners() {
-    this.canvas.addEventListener("mousedown", this.#handleMouseDown.bind(this));// sending the GraphEditor to the function
+    this.canvas.addEventListener("mousedown", this.#handleMouseDown.bind(this));// 'bind' = sending the GraphEditor to the function
     this.canvas.addEventListener("mousemove", this.#handleMouseMove.bind(this));
     // removing the menu when right click
     this.canvas.addEventListener("contextmenu", (evt) => evt.preventDefault());
@@ -24,8 +25,8 @@ class GraphEditor {
   }
 
   #handleMouseMove(evt) {
-    this.mouse = new Point(evt.offsetX, evt.offsetY);
-    this.hovered = getNearestPoint(this.mouse, this.graph.points, 12);
+    this.mouse = this.viewport.getMouse(evt);
+    this.hovered = getNearestPoint(this.mouse, this.graph.points, 12 * this.viewport.zoom);
     if (this.dragging == true) {
       this.selected.x = this.mouse.x;
       this.selected.y = this.mouse.y;
