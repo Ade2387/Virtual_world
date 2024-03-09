@@ -10,6 +10,9 @@
     <div id="controls">
       <button onclick="dispose()">🗑️</button>
       <button onclick="save()">💾</button>
+      &nbsp;
+      <button id="graphBtn" onclick="setMode('graph')">🖊️</button>
+      <button id="stopBtn" onclick="setMode('stop')">🛑</button>
       <!-- <button onclick="addRandomPoint()">Add Point</button>
       <button onclick="addRandomSegment()">Add Segment</button>
       <button onclick="removeRandomSegment()">Remove Segment</button>
@@ -18,8 +21,10 @@
     </div>
 
     <script src="js/world.js"></script>
-    <script src="js/graphEditor.js"></script>
     <script src="js/viewport.js"></script>
+    <script src="js/editors/graphEditor.js"></script>
+    <script src="js/editors/stopEditor.js"></script>
+
     <script src="js/items/tree.js"></script>
     <script src="js/items/building.js"></script>
     <script src="js/math/utils.js"></script>
@@ -91,8 +96,12 @@
 
       const viewport = new Viewport(myCanvas);
       const graphEditor = new GraphEditor(viewport, graph);
+      const stopEditor = new StopEditor(viewport, world);
 
       let oldGraphHash = graph.hash();
+
+      setMode("graph");
+
       animate();
 
       function animate() {
@@ -105,6 +114,7 @@
         world.draw(ctx, viewPoint);
         ctx.globalAlpha = 0.3;
         graphEditor.display();
+        stopEditor.display();
         requestAnimationFrame(animate);
       }
 
@@ -114,6 +124,34 @@
 
       function save() {
         localStorage.setItem("graph", JSON.stringify(graph));
+      }
+
+      function setMode(mode) {
+        disableEditors();
+        switch (mode) {
+          case "graph":
+            graphBtn.style.backgroundColor = "lightBlue";
+            graphBtn.style.filter = "";
+            graphEditor.enable();
+            break;
+          case "stop":
+            stopBtn.style.backgroundColor = "lightBlue";
+            stopBtn.style.filter = "";
+            stopEditor.enable();
+            break;
+
+        }
+      }
+
+      function disableEditors() {
+        graphBtn.style.backgroundColor = "gray";
+        graphBtn.style.filter = "grayscale(100%)";
+        graphBtn.style.boxShadow = "none";
+        graphEditor.disable();
+        stopBtn.style.backgroundColor = "gray";
+        stopBtn.style.filter = "grayscale(100%)";
+        stopBtn.style.boxShadow = "none";
+        stopEditor.disable();
       }
     </script>
   </body>
