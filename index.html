@@ -22,6 +22,7 @@
 
     <script src="js/world.js"></script>
     <script src="js/viewport.js"></script>
+    <script src="js/markings/stop.js"></script>
     <script src="js/editors/graphEditor.js"></script>
     <script src="js/editors/stopEditor.js"></script>
 
@@ -130,12 +131,12 @@
         disableEditors();
         switch (mode) {
           case "graph":
-            graphBtn.style.backgroundColor = "lightBlue";
+            graphBtn.style.backgroundColor = "lightGreen";
             graphBtn.style.filter = "";
             graphEditor.enable();
             break;
           case "stop":
-            stopBtn.style.backgroundColor = "lightBlue";
+            stopBtn.style.backgroundColor = "lightGreen";
             stopBtn.style.filter = "";
             stopEditor.enable();
             break;
