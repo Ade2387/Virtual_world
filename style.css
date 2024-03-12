@@ -10,7 +10,8 @@ h1{
   background-color: #2a5;
 }
 
-button {
+button, .file-input-label {
+  display: inline-block;
   background-color: white;
   font-size: 20px;
   border: none;
@@ -25,5 +26,8 @@ button {
 button:hover{
   background: blue;
   box-shadow: none;
+}
 
+input[type="file"] {
+  display: none;
 }

@@ -13,12 +13,12 @@ class World {
     this.buildingMinLength = buildingMinLength;
     this.buildingWidth = buildingWidth;
     this.spacing = spacing;
+    this.treeSize = treeSize;
 
     this.envelopes = [];
-    this.roadBoarders = [];
+    this.roadBorders = [];
     this.buildings = [];
     this.trees = [];
-    this.treeSize = treeSize;
     this.laneGuides = [],
 
     this.markings = [],
@@ -28,6 +28,26 @@ class World {
     this.generate();
   }
 
+  static load(info){
+    const world = new World(new Graph());
+    world.graph = Graph.load(info.graph);
+    world.roadWidth = info.roadWidth;
+    world.roadRoundness = info.roadRoundness;
+    world.buildingWidth = info.buildingWidth;
+    world.buildingMinLength = info.buildingMinLength;
+    world.spacing = info.spacing;
+    world.treeSize = info.treeSize;
+    world.envelopes = info.envelopes.map((e) => Envelope.load(e));
+    world.roadBorders = info.roadBorders.map((b) => new Segment(b.p1, b.p2));
+    world.buildings = info.buildings.map((e) => Building.load(e));
+    world.trees = info.trees.map((t) => new Tree(t.center, info.treeSize));
+    world.laneGuides = info.laneGuides.map((g) => new Segment(g.p1, g.p2));
+    world.markings = info.markings.map((m) => Marking.load(m));
+    world.zoom = info.zoom;
+    world.offset = info.offset;
+    return world;
+ }
+
   generate() {
     this.envelopes.length = 0;
     for (const seg of this.graph.segments) {
@@ -36,7 +56,7 @@ class World {
       );
     }
 
-    this.roadBoarders = Polygon.union(this.envelopes.map((e) => e.poly));
+    this.roadBorders = Polygon.union(this.envelopes.map((e) => e.poly));
     this.buildings = this.#generateBuildings();
     this.trees = this.#generateTrees();
 
@@ -59,9 +79,9 @@ class World {
     return segments;
   }
 
-  #generateTrees(count = 10){
+  #generateTrees(){
     const points = [
-      ...this.roadBoarders.map((s) => [s.p1, s.p2]).flat(),
+      ...this.roadBorders.map((s) => [s.p1, s.p2]).flat(),
       ...this.buildings.map((b) => b.base.points).flat()
     ];
     const left = Math.min(...points.map((p) => p.x));
@@ -247,7 +267,7 @@ class World {
     for (const seg of this.graph.segments) {
       seg.draw(ctx, { color: "white", width: 4, dash: [10, 10]});
     }
-    for (const seg of this.roadBoarders) {
+    for (const seg of this.roadBorders) {
       seg.draw(ctx, { color: "white", width: 4});
     }
     const items = [...this.buildings, ...this.trees];
